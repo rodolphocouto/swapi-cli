@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform") version "1.3.60"
+    id("org.jlleitschuh.gradle.ktlint") version "9.1.1"
 }
 
 repositories {
