@@ -15,7 +15,7 @@ import kotlinx.serialization.json.Json
 
 private const val BASE_URI = "https://swapi.co/api"
 
-class ResourceClient<T>(
+class ApiClient<T>(
     private val client: HttpClient,
     path: String,
     private val response: suspend (HttpResponse) -> T,
@@ -52,5 +52,5 @@ class SwapiClient {
         }
     }
 
-    val people = ResourceClient(client, "/people", { it.receive<Person>() }, { it.receive<PersonPage>() })
+    val people = ApiClient(client, "/people", { it.receive<Person>() }, { it.receive<PersonPage>() })
 }
