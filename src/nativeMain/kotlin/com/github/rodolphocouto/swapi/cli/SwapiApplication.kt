@@ -7,13 +7,14 @@ import com.github.rodolphocouto.swapi.cli.Operation.SEARCH
 import com.github.rodolphocouto.swapi.cli.Resource.FILMS
 import com.github.rodolphocouto.swapi.cli.Resource.PEOPLE
 import com.github.rodolphocouto.swapi.cli.Resource.STARSHIPS
+import com.github.rodolphocouto.swapi.cli.Resource.VEHICLES
 import com.github.rodolphocouto.swapi.cli.format.format
 import com.github.rodolphocouto.swapi.cli.format.formatToString
 import com.github.rodolphocouto.swapi.client.SwapiClient
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.UnstableDefault
 
-enum class Resource { PEOPLE, FILMS, STARSHIPS }
+enum class Resource { PEOPLE, FILMS, STARSHIPS, VEHICLES }
 enum class Operation(val hasParam: Boolean = false) { COUNT, LIST, SEARCH(true), GET(true) }
 data class Command(val resource: Resource, val operation: Operation, val param: String?)
 
@@ -26,6 +27,7 @@ fun main(args: Array<String>) = runBlocking {
         PEOPLE -> people(command, swapi)
         FILMS -> films(command, swapi)
         STARSHIPS -> starships(command, swapi)
+        VEHICLES -> vehicles(command, swapi)
     }
 
     println(output)
@@ -56,6 +58,15 @@ private suspend fun starships(command: Command, swapi: SwapiClient) =
         LIST -> swapi.starships.list().formatToString()
         SEARCH -> swapi.starships.search(command.param!!).formatToString()
         GET -> swapi.starships.get(command.param!!.toInt()).format()
+    }
+
+@UnstableDefault
+private suspend fun vehicles(command: Command, swapi: SwapiClient) =
+    when (command.operation) {
+        COUNT -> swapi.vehicles.count().toString()
+        LIST -> swapi.vehicles.list().formatToString()
+        SEARCH -> swapi.vehicles.search(command.param!!).formatToString()
+        GET -> swapi.vehicles.get(command.param!!.toInt()).format()
     }
 
 private fun parseArgs(args: Array<String>): Command {

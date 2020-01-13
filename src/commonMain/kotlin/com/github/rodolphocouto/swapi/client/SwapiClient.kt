@@ -7,6 +7,8 @@ import com.github.rodolphocouto.swapi.client.model.Person
 import com.github.rodolphocouto.swapi.client.model.PersonPage
 import com.github.rodolphocouto.swapi.client.model.Starship
 import com.github.rodolphocouto.swapi.client.model.StarshipPage
+import com.github.rodolphocouto.swapi.client.model.Vehicle
+import com.github.rodolphocouto.swapi.client.model.VehiclePage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.receive
 import io.ktor.client.features.json.JsonFeature
@@ -59,4 +61,5 @@ class SwapiClient {
     val people = Resource(client, "/people", { it.receive<Person>() }, { it.receive<PersonPage>() })
     val films = Resource(client, "/films", { it.receive<Film>() }, { it.receive<FilmPage>() })
     val starships = Resource(client, "/starships", { it.receive<Starship>() }, { it.receive<StarshipPage>() })
+    val vehicles = Resource(client, "/vehicles", { it.receive<Vehicle>() }, { it.receive<VehiclePage>() })
 }
