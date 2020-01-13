@@ -19,7 +19,7 @@ kotlin {
         binaries {
             executable {
                 baseName = "swapi-cli"
-                entryPoint = "com.github.rodolphocouto.main"
+                entryPoint = "com.github.rodolphocouto.swapi.cli.main"
             }
         }
     }

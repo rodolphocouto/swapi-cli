@@ -12,7 +12,8 @@ data class Person(
     @SerialName("skin_color") val skinColor: String,
     @SerialName("eye_color") val eyeColor: String,
     @SerialName("birth_year") val birthYear: String,
-    val gender: String
+    val gender: String,
+    val url: String
 )
 
 @Serializable
