@@ -1,8 +1,8 @@
-package com.github.rodolphocouto.swapi.cli.output
+package com.github.rodolphocouto.swapi.cli.format
 
 import com.github.rodolphocouto.swapi.client.model.Person
 
-fun Person.toOutput() =
+fun Person.format() =
     """
         |      name: $name
         |    height: $height
@@ -14,6 +14,6 @@ fun Person.toOutput() =
         |       url: $url
     """.trimMargin("|")
 
-fun Person?.toOutput() = this?.toOutput() ?: "Person not found :("
+fun Person?.format() = this?.format() ?: "Person not found :("
 
-fun Iterable<Person>.joinToOutput() = this.joinToString(separator = "\n\n") { it.toOutput() }
+fun Iterable<Person>.formatToString() = this.joinToString(separator = "\n\n") { it.format() }

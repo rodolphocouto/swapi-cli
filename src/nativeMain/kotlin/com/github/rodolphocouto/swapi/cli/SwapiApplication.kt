@@ -6,8 +6,8 @@ import com.github.rodolphocouto.swapi.cli.Operation.LIST
 import com.github.rodolphocouto.swapi.cli.Operation.SEARCH
 import com.github.rodolphocouto.swapi.cli.Resource.FILMS
 import com.github.rodolphocouto.swapi.cli.Resource.PEOPLE
-import com.github.rodolphocouto.swapi.cli.output.joinToOutput
-import com.github.rodolphocouto.swapi.cli.output.toOutput
+import com.github.rodolphocouto.swapi.cli.format.format
+import com.github.rodolphocouto.swapi.cli.format.formatToString
 import com.github.rodolphocouto.swapi.client.SwapiClient
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.UnstableDefault
@@ -22,22 +22,30 @@ fun main(args: Array<String>) = runBlocking {
     val swapi = SwapiClient()
 
     val output = when (command.resource) {
-        PEOPLE -> when (command.operation) {
-            COUNT -> swapi.people.count().toString()
-            LIST -> swapi.people.list().joinToOutput()
-            SEARCH -> swapi.people.search(command.param!!).joinToOutput()
-            GET -> swapi.people.get(command.param!!.toInt()).toOutput()
-        }
-        FILMS -> when (command.operation) {
-            COUNT -> swapi.films.count().toString()
-            LIST -> swapi.films.list().joinToOutput()
-            SEARCH -> swapi.films.search(command.param!!).joinToOutput()
-            GET -> swapi.films.get(command.param!!.toInt()).toOutput()
-        }
+        PEOPLE -> people(command, swapi)
+        FILMS -> films(command, swapi)
     }
 
     println(output)
 }
+
+@UnstableDefault
+private suspend fun people(command: Command, swapi: SwapiClient) =
+    when (command.operation) {
+        COUNT -> swapi.people.count().toString()
+        LIST -> swapi.people.list().formatToString()
+        SEARCH -> swapi.people.search(command.param!!).formatToString()
+        GET -> swapi.people.get(command.param!!.toInt()).format()
+    }
+
+@UnstableDefault
+private suspend fun films(command: Command, swapi: SwapiClient) =
+    when (command.operation) {
+        COUNT -> swapi.films.count().toString()
+        LIST -> swapi.films.list().formatToString()
+        SEARCH -> swapi.films.search(command.param!!).formatToString()
+        GET -> swapi.films.get(command.param!!.toInt()).format()
+    }
 
 private fun parseArgs(args: Array<String>): Command {
     if (args.size !in 2..3) {
