@@ -1,5 +1,7 @@
 package com.github.rodolphocouto.swapi.client
 
+import com.github.rodolphocouto.swapi.client.model.Film
+import com.github.rodolphocouto.swapi.client.model.FilmPage
 import com.github.rodolphocouto.swapi.client.model.Page
 import com.github.rodolphocouto.swapi.client.model.Person
 import com.github.rodolphocouto.swapi.client.model.PersonPage
@@ -53,4 +55,5 @@ class SwapiClient {
     }
 
     val people = Resource(client, "/people", { it.receive<Person>() }, { it.receive<PersonPage>() })
+    val films = Resource(client, "/films", { it.receive<Film>() }, { it.receive<FilmPage>() })
 }

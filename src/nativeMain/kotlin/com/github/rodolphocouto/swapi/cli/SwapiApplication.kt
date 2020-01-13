@@ -4,6 +4,7 @@ import com.github.rodolphocouto.swapi.cli.Operation.COUNT
 import com.github.rodolphocouto.swapi.cli.Operation.GET
 import com.github.rodolphocouto.swapi.cli.Operation.LIST
 import com.github.rodolphocouto.swapi.cli.Operation.SEARCH
+import com.github.rodolphocouto.swapi.cli.Resource.FILMS
 import com.github.rodolphocouto.swapi.cli.Resource.PEOPLE
 import com.github.rodolphocouto.swapi.cli.output.joinToOutput
 import com.github.rodolphocouto.swapi.cli.output.toOutput
@@ -11,7 +12,7 @@ import com.github.rodolphocouto.swapi.client.SwapiClient
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.UnstableDefault
 
-enum class Resource { PEOPLE }
+enum class Resource { PEOPLE, FILMS }
 enum class Operation(val hasParam: Boolean = false) { COUNT, LIST, SEARCH(true), GET(true) }
 data class Command(val resource: Resource, val operation: Operation, val param: String?)
 
@@ -26,6 +27,12 @@ fun main(args: Array<String>) = runBlocking {
             LIST -> swapi.people.list().joinToOutput()
             SEARCH -> swapi.people.search(command.param!!).joinToOutput()
             GET -> swapi.people.get(command.param!!.toInt()).toOutput()
+        }
+        FILMS -> when (command.operation) {
+            COUNT -> swapi.films.count().toString()
+            LIST -> swapi.films.list().joinToOutput()
+            SEARCH -> swapi.films.search(command.param!!).joinToOutput()
+            GET -> swapi.films.get(command.param!!.toInt()).toOutput()
         }
     }
 
