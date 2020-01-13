@@ -1,8 +1,8 @@
-package com.github.rodolphocouto.swapi
+package com.github.rodolphocouto.swapi.client
 
-import com.github.rodolphocouto.swapi.model.Page
-import com.github.rodolphocouto.swapi.model.Person
-import com.github.rodolphocouto.swapi.model.PersonPage
+import com.github.rodolphocouto.swapi.client.model.Page
+import com.github.rodolphocouto.swapi.client.model.Person
+import com.github.rodolphocouto.swapi.client.model.PersonPage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.receive
 import io.ktor.client.features.json.JsonFeature
@@ -15,7 +15,7 @@ import kotlinx.serialization.json.Json
 
 private const val BASE_URI = "https://swapi.co/api"
 
-class ApiClient<T>(
+class Resource<T>(
     private val client: HttpClient,
     path: String,
     private val response: suspend (HttpResponse) -> T,
@@ -52,5 +52,5 @@ class SwapiClient {
         }
     }
 
-    val people = ApiClient(client, "/people", { it.receive<Person>() }, { it.receive<PersonPage>() })
+    val people = Resource(client, "/people", { it.receive<Person>() }, { it.receive<PersonPage>() })
 }

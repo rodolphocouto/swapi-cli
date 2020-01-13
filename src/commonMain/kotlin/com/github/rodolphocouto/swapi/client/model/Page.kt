@@ -1,4 +1,4 @@
-package com.github.rodolphocouto.swapi.model
+package com.github.rodolphocouto.swapi.client.model
 
 interface Page<T> {
 
