@@ -5,6 +5,8 @@ import com.github.rodolphocouto.swapi.client.model.FilmPage
 import com.github.rodolphocouto.swapi.client.model.Page
 import com.github.rodolphocouto.swapi.client.model.Person
 import com.github.rodolphocouto.swapi.client.model.PersonPage
+import com.github.rodolphocouto.swapi.client.model.Specie
+import com.github.rodolphocouto.swapi.client.model.SpeciePage
 import com.github.rodolphocouto.swapi.client.model.Starship
 import com.github.rodolphocouto.swapi.client.model.StarshipPage
 import com.github.rodolphocouto.swapi.client.model.Vehicle
@@ -62,4 +64,5 @@ class SwapiClient {
     val films = Resource(client, "/films", { it.receive<Film>() }, { it.receive<FilmPage>() })
     val starships = Resource(client, "/starships", { it.receive<Starship>() }, { it.receive<StarshipPage>() })
     val vehicles = Resource(client, "/vehicles", { it.receive<Vehicle>() }, { it.receive<VehiclePage>() })
+    val species = Resource(client, "/species", { it.receive<Specie>() }, { it.receive<SpeciePage>() })
 }
