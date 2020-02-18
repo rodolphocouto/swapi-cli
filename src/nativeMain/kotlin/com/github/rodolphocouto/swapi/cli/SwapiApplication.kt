@@ -4,111 +4,57 @@ import com.github.rodolphocouto.swapi.cli.Operation.COUNT
 import com.github.rodolphocouto.swapi.cli.Operation.GET
 import com.github.rodolphocouto.swapi.cli.Operation.LIST
 import com.github.rodolphocouto.swapi.cli.Operation.SEARCH
-import com.github.rodolphocouto.swapi.cli.Resource.FILMS
-import com.github.rodolphocouto.swapi.cli.Resource.PEOPLE
-import com.github.rodolphocouto.swapi.cli.Resource.PLANETS
-import com.github.rodolphocouto.swapi.cli.Resource.SPECIES
-import com.github.rodolphocouto.swapi.cli.Resource.STARSHIPS
-import com.github.rodolphocouto.swapi.cli.Resource.VEHICLES
 import com.github.rodolphocouto.swapi.cli.format.format
-import com.github.rodolphocouto.swapi.cli.format.formatToString
+import com.github.rodolphocouto.swapi.client.Resource
 import com.github.rodolphocouto.swapi.client.SwapiClient
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import kotlinx.cli.ArgType.Choice
+import kotlinx.cli.ExperimentalCli
+import kotlinx.cli.Subcommand
+import kotlinx.cli.optional
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.UnstableDefault
 
-enum class Resource { PEOPLE, FILMS, STARSHIPS, VEHICLES, SPECIES, PLANETS }
-enum class Operation(val hasParam: Boolean = false) { COUNT, LIST, SEARCH(true), GET(true) }
-data class Command(val resource: Resource, val operation: Operation, val param: String?)
+enum class Operation { COUNT, LIST, SEARCH, GET }
 
+@ExperimentalCli
 @UnstableDefault
-fun main(args: Array<String>) = runBlocking {
-    val command = parseArgs(args)
-    val swapi = SwapiClient()
+class ResourceCommand<T>(
+    name: String,
+    private val resource: Resource<T>,
+    private val format: (T?) -> String
+) : Subcommand(name) {
 
-    val output = when (command.resource) {
-        PEOPLE -> people(command, swapi)
-        FILMS -> films(command, swapi)
-        STARSHIPS -> starships(command, swapi)
-        VEHICLES -> vehicles(command, swapi)
-        SPECIES -> species(command, swapi)
-        PLANETS -> planets(command, swapi)
+    private val op by argument(Choice(enumValues<Operation>().map { it.name.toLowerCase() }), description = "operation")
+    private val param by argument(ArgType.String, description = "parameter - only for search and get").optional()
+
+    override fun execute() = runBlocking {
+        val output = when (enumValueOf<Operation>(op.toUpperCase())) {
+            COUNT -> listOf(resource.count().toString())
+            LIST -> resource.list().map { format(it) }
+            SEARCH -> resource.search(param ?: "").map { format(it) }
+            GET -> listOf(format(resource.get(param?.toInt() ?: 0)))
+        }
+
+        println(output.joinToString(separator = "\n\n"))
     }
-
-    println(output)
 }
 
+@ExperimentalCli
 @UnstableDefault
-private suspend fun people(command: Command, swapi: SwapiClient) =
-    when (command.operation) {
-        COUNT -> swapi.people.count().toString()
-        LIST -> swapi.people.list().formatToString()
-        SEARCH -> swapi.people.search(command.param!!).formatToString()
-        GET -> swapi.people.get(command.param!!.toInt()).format()
-    }
+fun main(args: Array<String>) {
+    val client = SwapiClient()
+    val parser = ArgParser("swapi")
 
-@UnstableDefault
-private suspend fun films(command: Command, swapi: SwapiClient) =
-    when (command.operation) {
-        COUNT -> swapi.films.count().toString()
-        LIST -> swapi.films.list().formatToString()
-        SEARCH -> swapi.films.search(command.param!!).formatToString()
-        GET -> swapi.films.get(command.param!!.toInt()).format()
-    }
+    parser.subcommands(
+        ResourceCommand("people", client.people) { it.format() },
+        ResourceCommand("films", client.films) { it.format() },
+        ResourceCommand("starships", client.starships) { it.format() },
+        ResourceCommand("vehicles", client.vehicles) { it.format() },
+        ResourceCommand("species", client.species) { it.format() },
+        ResourceCommand("planets", client.planets) { it.format() }
+    )
 
-@UnstableDefault
-private suspend fun starships(command: Command, swapi: SwapiClient) =
-    when (command.operation) {
-        COUNT -> swapi.starships.count().toString()
-        LIST -> swapi.starships.list().formatToString()
-        SEARCH -> swapi.starships.search(command.param!!).formatToString()
-        GET -> swapi.starships.get(command.param!!.toInt()).format()
-    }
-
-@UnstableDefault
-private suspend fun vehicles(command: Command, swapi: SwapiClient) =
-    when (command.operation) {
-        COUNT -> swapi.vehicles.count().toString()
-        LIST -> swapi.vehicles.list().formatToString()
-        SEARCH -> swapi.vehicles.search(command.param!!).formatToString()
-        GET -> swapi.vehicles.get(command.param!!.toInt()).format()
-    }
-
-@UnstableDefault
-private suspend fun species(command: Command, swapi: SwapiClient) =
-    when (command.operation) {
-        COUNT -> swapi.species.count().toString()
-        LIST -> swapi.species.list().formatToString()
-        SEARCH -> swapi.species.search(command.param!!).formatToString()
-        GET -> swapi.species.get(command.param!!.toInt()).format()
-    }
-
-@UnstableDefault
-private suspend fun planets(command: Command, swapi: SwapiClient) =
-    when (command.operation) {
-        COUNT -> swapi.planets.count().toString()
-        LIST -> swapi.planets.list().formatToString()
-        SEARCH -> swapi.planets.search(command.param!!).formatToString()
-        GET -> swapi.planets.get(command.param!!.toInt()).format()
-    }
-
-private fun parseArgs(args: Array<String>): Command {
-    if (args.size !in 2..3) {
-        throw IllegalArgumentException("Invalid arguments")
-    }
-
-    val resource = enumValues<Resource>()
-        .firstOrNull { it.toString().toLowerCase() == args[0] }
-        ?: throw IllegalArgumentException("Invalid resource")
-
-    val operation = enumValues<Operation>()
-        .firstOrNull { it.toString().toLowerCase() == args[1] }
-        ?: throw IllegalArgumentException("Invalid operation")
-
-    if (operation.hasParam && args.size != 3) {
-        throw IllegalArgumentException("Invalid arguments")
-    }
-
-    val param = if (operation.hasParam) args[2] else null
-
-    return Command(resource, operation, param)
+    parser.parse(args)
 }
