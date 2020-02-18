@@ -24,7 +24,7 @@ The CLI expects the following command format:
 
 ## Examples
 
-* People:
+People:
 
 ```shell script
 ./swapi-cli.kexe people count
@@ -33,7 +33,7 @@ The CLI expects the following command format:
 ./swapi-cli.kexe people get 1
 ```
 
-* Films:
+Films:
 
 ```shell script
 ./swapi-cli.kexe films count
@@ -42,7 +42,7 @@ The CLI expects the following command format:
 ./swapi-cli.kexe films get 1
 ```
 
-* Starships:
+Starships:
 
 ```shell script
 ./swapi-cli.kexe starships count
@@ -51,7 +51,7 @@ The CLI expects the following command format:
 ./swapi-cli.kexe starships get 1
 ```
 
-* Vehicles:
+Vehicles:
 
 ```shell script
 ./swapi-cli.kexe vehicles count
@@ -60,7 +60,7 @@ The CLI expects the following command format:
 ./swapi-cli.kexe vehicles get 1
 ```
 
-* Species:
+Species:
 
 ```shell script
 ./swapi-cli.kexe species count
@@ -69,7 +69,7 @@ The CLI expects the following command format:
 ./swapi-cli.kexe species get 1
 ```
 
-* Planets:
+Planets:
 
 ```shell script
 ./swapi-cli.kexe planets count
