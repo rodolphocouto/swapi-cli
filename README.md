@@ -4,6 +4,12 @@ A simple CLI written in Kotlin/Native to retrieve resources from The Star Wars A
 
 ## Build
 
+Prerequisites:
+
+* Java >= 8
+* cURL
+* ncurses5-compat-libs
+
 ```shell script
 ./gradlew clean build
 ```
